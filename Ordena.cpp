@@ -75,7 +75,7 @@ int main(int argc, char**argv)
     rewind(f); // fseek(f,0,SEEK_SET);
     printf("\nTamanho do Arquivo: %ld\n", tamanho);
     printf("Tamanho do Registro: %ld\n", sizeof(Endereco));
-    printf("Tamanho do Arquivo em Registros: %ld\n", tamanho / sizeof(Endereco));
+    printf("Tamanho do Arquivo em Registros: %ld\n \n", tamanho / sizeof(Endereco));
     primeiro = 0;
     ultimo = (tamanho / sizeof(Endereco)) - 1;
     meio = (primeiro + ultimo) / 2;
@@ -89,12 +89,7 @@ int main(int argc, char**argv)
     rewind(f);
     e = (Endereco *)malloc(regBloco * sizeof(Endereco));
     for (int i = 0; i < blocos; i++)
-    {   
-        if (fread(e, sizeof(Endereco), regBloco, f) == regBloco)
-        {
-            printf("Leitura do bloco %d\n", i);
-        }
-
+    { 
         qsort(e, regBloco, sizeof(Endereco), comp);
         char nome[16];
         sprintf(nome, "CepDisc_%d.dat", i);
@@ -103,7 +98,6 @@ int main(int argc, char**argv)
         fwrite(e, sizeof(Endereco), regBloco, g);
         fclose(g);
         count++;
-        printf("Bloco %d salvo em disco\n", i);
     }
     free(e);
     fclose(f);
@@ -112,20 +106,24 @@ int main(int argc, char**argv)
     int index = 0;
     for (int i = log2(blocos); i > 0; i--)
     {
+        
+	    printf("Junta %d blocos em ", blocos);
         aux = count; blocos = blocos / 2;
-	printf("%dº parte \n", i);
+        printf("%d \n", blocos);
         for (int i = 0; i < blocos; i++)
         {
             char parte1[25];
             sprintf(parte1, "CepDisc_%d.dat", index++); 
 
+             printf("Intercala o bloco %d com ", index);
+
             char parte2[25];
             sprintf(parte2, "CepDisc_%d.dat", index++);
 
+             printf("%d \n", index);
+
             char saida[25];
             sprintf(saida , "CepDisc_%d.dat", count++);
-
-            printf("Agora intercala a parte '%s' com '%s'\n", parte1, parte2);
 
             intercala(parte1, parte2, saida);
             remove(parte1); remove(parte2);
